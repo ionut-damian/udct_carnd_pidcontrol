@@ -1,9 +1,13 @@
-# CarND-Controls-PID
+# PID Controller
 Self-Driving Car Engineer Nanodegree Program
 
 ---
 
-## Dependencies
+## Compiling the Code
+
+The program can be built both with cmake/gcc and with Visual Studio. In both cases, the stand-alone simulator aslo needs to be downloaded. You can download it from the [project intro page](https://github.com/udacity/self-driving-car-sim/releases) in the classroom.
+
+### Cmake and GCC
 
 * cmake >= 3.5
  * All OSes: [click here for installation instructions](https://cmake.org/install/)
@@ -24,11 +28,10 @@ Self-Driving Car Engineer Nanodegree Program
     git checkout e94b6e1
     ```
     Some function signatures have changed in v0.14.x. See [this PR](https://github.com/udacity/CarND-MPC-Project/pull/3) for more details.
-* Simulator. You can download these from the [project intro page](https://github.com/udacity/self-driving-car-sim/releases) in the classroom.
 
 Fellow students have put together a guide to Windows set-up for the project [here](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/files/Kidnapped_Vehicle_Windows_Setup.pdf) if the environment you have set up for the Sensor Fusion projects does not work for this project. There's also an experimental patch for windows in this [PR](https://github.com/udacity/CarND-PID-Control-Project/pull/3).
 
-## Basic Build Instructions
+Basic Build Instructions:
 
 1. Clone this repo.
 2. Make a build directory: `mkdir build && cd build`
@@ -37,62 +40,40 @@ Fellow students have put together a guide to Windows set-up for the project [her
 
 Tips for setting up your environment can be found [here](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/23d376c7-0195-4276-bdf0-e02f1f3c665d)
 
-## Editor Settings
+### Visual Studio
 
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
+For setting up the environment for Visual Studio under Windows, follow these steps (credits go to [fkeidel](https://github.com/fkeidel/CarND-Term2-ide-profile-VisualStudio/blob/master/VisualStudio/README.md)):
 
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
+1. Install cmake
+    * Download and run windows installer (see https://cmake.org/download/)
 
-## Code Style
+2. Install make
+    * Download setup from   http://gnuwin32.sourceforge.net/packages/make.htm
+    * Select 'Complete package, except sources - Setup'
+    * Run downloaded setup
 
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
+3. Clone and install vcpkg
+    * The install script used in the next step will asume that you installed vckpgk in c:\\vcpkg. You can choose another location, but then you have to adapt VcPkgDir in line 13 in install-windows.bat
+    * cd c:\\
+    * git clone https://github.com/Microsoft/vcpkg.git
+    * cd vcpkg
+    * call bootstrap-vcpkg.bat
 
-## Project Instructions and Rubric
+4. Adapt and call the install script for windows
+    * cd to directory ide_profiles\\VisualStudio
+    * Open install-windows.bat and adjust lines 5 to 7 to the   settings you will use when building your Visual Studio project    (platform, toolset, buildtype)
+    * You could also pass these settings as command line arguments  to install-windows.bat
+    * If you have more than one toolset installed, comment line 14  and uncomment line 15
+    * call install-windows.bat
+    * the install scipt will
+        * set the build parameters for the libraries to install     (platform, toolset, buildtype)
+        * use vcpkg to download, build and install uWebSockets
+            * it will download the latest version of uWebSockets
 
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
+5. Open solution and adapt toolset settings
+    * Open Localisation.sln
+    * Open project properties
+    * Adapt target platform version and platform toolset (use the   same setting that you used in the install script)
 
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/e8235395-22dd-4b87-88e0-d108c5e5bbf4/concepts/6a4d8d42-6a04-4aa6-b284-1697c0fd6562)
-for instructions and the project rubric.
-
-## Hints!
-
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
+6. Build project in Visual Studio
+    * Build the project for the platform and buildtype you used in the install script

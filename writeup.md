@@ -10,7 +10,7 @@ n this project, the goal is to implement a PID controller in C++ to maneuver the
 
 [//]: # (Image References)
 
-[image1]: ./img/final.jpg "Final  parameter configuration after X twiddle iterations"
+[image1]: ./img/final.jpg "Final  parameter configuration after 18 twiddle iterations"
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/1971/view) individually and describe how I addressed each point in my implementation.  
@@ -42,7 +42,7 @@ However, in order to improve the performance and achieve a smoother trajectory f
 
 Between each phase, the simulator is allowed to run for 800 ticks. At the end of each phase, the total error is determined which is then used to evaluate the effect of the parameter tuning. Furthermore, the PID controller is re-initialized and the results of each phase are applied.
 
-In the current implementation, twiddle is initialized with the above mentioned parameter values as well as the following deltas: *0.1*, *0.001*, *0.5*. After X steps, twiddle managed to lower the total error from 0.08 to 0.01. The final parameters identified by twiddle are *Kp=0.2*, *Ki=0.0*, *Kd=3.0*.
+In the current implementation, twiddle is initialized with the above mentioned parameter values as well as the following deltas: *0.1*, *0.001*, *0.5*. After 18 iterations, twiddle managed to lower the total error from 0.079 to 0.0082. The final parameters identified by twiddle are *Kp=0.132*, *Ki=0.00157*, *Kd=3.328*.
 
 ![alt text][image1]
 
