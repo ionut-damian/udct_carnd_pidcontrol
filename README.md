@@ -1,5 +1,6 @@
 # PID Controller
-Self-Driving Car Engineer Nanodegree Program
+
+This project implements a PID controller in C++ to maneuver the vehicle around the lake track. Fore more details on the implementation, please check the file writeup.md
 
 ---
 

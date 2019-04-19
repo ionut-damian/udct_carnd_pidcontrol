@@ -6,7 +6,7 @@
 
 **PID Controller Project**
 
-n this project, the goal is to implement a PID controller in C++ to maneuver the vehicle around the lake track.
+In this project, the goal is to implement a PID controller in C++ to maneuver the vehicle around the lake track.
 
 [//]: # (Image References)
 
