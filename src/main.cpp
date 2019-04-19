@@ -5,6 +5,8 @@
 #include "json.hpp"
 #include "PID.h"
 
+#include "Twiddle.h"
+
 // for convenience
 using nlohmann::json;
 using std::string;
@@ -37,15 +39,23 @@ int main()
 {
     uWS::Hub h;
 
-    PID pid;
     /**
-     * TODO: Initialize the pid variable.
+     * Initialize the pid variable.
      */
+    Twiddle twiddle(0); //our parameter optimizer
+    twiddle.params = { 0.2, 0, 3.0 };
+    twiddle.dparams = { 0.1, 0.001, 0.5 };
+
+    PID pid;
+    pid.Init(twiddle.params[0], twiddle.params[1], twiddle.params[2]);
+
+    int count = 0;
+    double total_error = 0;
 
 #ifdef _MSC_VER    
-    h.onMessage([&pid](uWS::WebSocket<uWS::SERVER>* ws, char *data, size_t length, uWS::OpCode opCode)
+    h.onMessage([&pid, &twiddle, &count, &total_error](uWS::WebSocket<uWS::SERVER>* ws, char *data, size_t length, uWS::OpCode opCode)
 #else
-    h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode)
+    h.onMessage([&pid, &twiddle, &count, &total_error](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode)
 #endif
     {
         // "42" at the start of the message means there's a websocket message event.
@@ -75,15 +85,41 @@ int main()
                      *   Maybe use another PID controller to control the speed!
                      */
 
+                    //perform parameter optimization
+                    
+                    count++;
+                    int num_steps = 400;
+
+                    if (count > num_steps)
+                    {
+                        total_error += pow(cte, 2);
+                    }
+                    
+                    if (count > 2* num_steps)
+                    {
+                        twiddle.update(total_error / num_steps);
+                        printf("{%.4f, %.5f, %.4f} -> best error: %.6f (#%d, param %d, phase %s)\n", 
+                            twiddle.params[0], twiddle.params[1], twiddle.params[2],
+                            twiddle.best_err,
+                            twiddle.steps, twiddle.current_param, twiddle.Phase_str[twiddle.current_phase]);
+
+                        pid.Init(twiddle.params[0], twiddle.params[1], twiddle.params[2]);
+                        
+                        total_error = 0;
+                        count = 0;
+                    }
+
+                    pid.UpdateError(cte);
+                    steer_value = -pid.TotalError();
+
                      // DEBUG
-                    std::cout << "CTE: " << cte << " Steering Value: " << steer_value
-                        << std::endl;
+                    //std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
 
                     json msgJson;
                     msgJson["steering_angle"] = steer_value;
-                    msgJson["throttle"] = 0.3;
+                    msgJson["throttle"] = (twiddle.steps > 100) ? 0.5 : 0.3; //accelerate after the optimization phase
                     auto msg = "42[\"steer\"," + msgJson.dump() + "]";
-                    std::cout << msg << std::endl;
+                    //std::cout << msg << std::endl;
 #ifdef _MSC_VER      
                     ws->send(msg.data(), msg.length(), uWS::OpCode::TEXT); //vs
 #else
@@ -128,7 +164,8 @@ int main()
 #endif
 
     int port = 4567;
-    if (h.listen(port))
+    auto host = "127.0.0.1";
+    if (h.listen(host, port))
     {
         std::cout << "Listening to port " << port << std::endl;
     }
